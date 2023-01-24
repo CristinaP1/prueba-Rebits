@@ -38,6 +38,13 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
+      
+        $validated = $request->validate([
+            'nombreUsuario' => 'required|alpha|max:60',
+            'apellidoUsuario' => 'required|alpha|max:60',
+            'correoUsuario' => 'required|email',
+        ]);
+
         $persona = new Person;
         $persona->nombre = $request->nombreUsuario;
         $persona->apellido = $request->apellidoUsuario;
@@ -79,6 +86,12 @@ class PersonController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'nombreUsuario' => 'required|alpha|max:60',
+            'apellidoUsuario' => 'required|alpha|max:60',
+            'correoUsuario' => 'required|email',
+        ]);
+
         $persona = Person::find($id);
         $persona->nombre = $request->nombreUsuario;
         $persona->apellido = $request->apellidoUsuario;
@@ -92,11 +105,16 @@ class PersonController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Person  $person
-     * @return \Illuminate\Http\Response
+     * @return \Illumñinate\Http\Response
      */
     public function destroy($id)
     {
         $persona = Person::findOrFail($id);
+
+        foreach($persona->vehicles as $vehiculo){
+            $vehiculo->delete();
+        }
+
         $persona->delete();
         return redirect()->route('personas.index')->with('success', 'La persona ha sido eliminada exitosamente');
     }
@@ -111,4 +129,5 @@ class PersonController extends Controller
         $vehiculos = Vehicle::withTrashed()->where('person_id', $id)->get();
         return view('person.history',compact('vehiculos'));
     }
+
 }
