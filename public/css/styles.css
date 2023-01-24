@@ -32,3 +32,8 @@
 .container__form{
     margin: 15px;
 }
+
+.paginator{
+    display: flex;
+    justify-content: flex-end;
+}

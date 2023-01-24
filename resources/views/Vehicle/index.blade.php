@@ -1,6 +1,7 @@
 <x-layout />
 
 @include('components.toast')
+
 <div class="container__list">
     <div class="header__list">
         <h4 class="title__list">Listado de vehiculos</h4>
@@ -39,5 +40,8 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="paginator">
+            {{ $vehiculos->links() }}
+        </div>
     </div>
 </div>

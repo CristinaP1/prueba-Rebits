@@ -4,7 +4,7 @@
 <div class="container__list">
     <div class="header__list">
         <h4 class="title__list">Listado de usuarios</h4>
-            <a class="btn btn-success" href="{{route('personas.create')}}">Nuevo</a>
+        <a class="btn btn-success" href="{{route('personas.create')}}">Nuevo</a>
     </div>
     <hr>
     <div class="container__table">
@@ -39,5 +39,8 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="paginator">
+            {{ $personas->links() }}
+        </div>
     </div>
 </div>
