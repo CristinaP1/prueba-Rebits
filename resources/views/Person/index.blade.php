@@ -1,12 +1,18 @@
 <x-layout />
+<!-- Se incluye la componente de toast -->
 @include('components.toast')
 
+<!-- Contenedor del listado -->
 <div class="container__list">
+    <!-- Encabezado del listado -->
     <div class="header__list">
+        <!-- Nombre del lsitado -->
         <h4 class="title__list">Listado de usuarios</h4>
+        <!-- Boton para crear una nueva persona -->
         <a class="btn btn-success" href="{{route('personas.create')}}">Nuevo</a>
     </div>
     <hr>
+    <!-- Contenedor de la tabla -->
     <div class="container__table">
         <table class="table table-striped table-hover">
             <thead>
@@ -39,6 +45,7 @@
                 @endforeach
             </tbody>
         </table>
+        <!-- Paginacion de personas -->
         <div class="paginator">
             {{ $personas->links() }}
         </div>

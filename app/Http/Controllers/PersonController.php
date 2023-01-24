@@ -39,13 +39,14 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
-      
+        /* validacion de los tipos de datos */
         $validated = $request->validate([
             'nombreUsuario' => 'required|alpha|max:60',
             'apellidoUsuario' => 'required|alpha|max:60',
             'correoUsuario' => 'required|email',
         ]);
 
+        /* Se crea una nueva persona */
         try {
             $persona = new Person;
             $persona->nombre = $request->nombreUsuario;
@@ -53,6 +54,7 @@ class PersonController extends Controller
             $persona->correo = $request->correoUsuario;
             $persona->save();
         } catch (\Throwable $th) {
+            /* Si falla el ingres de una persona arroja un error */
             Log::info('Error en store de contralador de persona');
             Log::error($th);
             return redirect()->route('personas.index')->with('error', 'Se ha producido un error en el sistema');
@@ -69,7 +71,6 @@ class PersonController extends Controller
      */
     public function show(Person $person)
     {
-        
     }
 
     /**
@@ -80,12 +81,14 @@ class PersonController extends Controller
      */
     public function edit($id)
     {
+        /* Se busca la persona a editar */
         try {
             $persona = Person::findOrFail($id);
         } catch (\Throwable $th) {
+            /* Si no se encuentra la persona arroja un error */
             return redirect()->route('personas.index')->with('error', 'La persona no ha sido encontrada');
         }
-        return view('person.edit',compact('persona'));
+        return view('person.edit', compact('persona'));
     }
 
     /**
@@ -97,19 +100,22 @@ class PersonController extends Controller
      */
     public function update(Request $request, $id)
     {
+        /* Validacion de los tipos de dato */
         $validated = $request->validate([
             'nombreUsuario' => 'required|alpha|max:60',
             'apellidoUsuario' => 'required|alpha|max:60',
             'correoUsuario' => 'required|email',
         ]);
 
+        /* Se busca una persona para editar sus datos */
         try {
             $persona = Person::find($id);
             $persona->nombre = $request->nombreUsuario;
             $persona->apellido = $request->apellidoUsuario;
-            $persona->correo = $request->correoUsuario;  
+            $persona->correo = $request->correoUsuario;
             $persona->save();
         } catch (\Throwable $th) {
+            /* Si hay una error al actualizar a la persona arroja un error */
             Log::info('Error en update de contralador de persona');
             Log::error($th);
             return redirect()->route('personas.index')->with('success', 'La persona ha sido actualizada exitosamente');
@@ -126,12 +132,13 @@ class PersonController extends Controller
      */
     public function destroy($id)
     {
+        /* Busca la persona a eliminar */
         $persona = Person::findOrFail($id);
-
-        foreach($persona->vehicles as $vehiculo){
+        /* Eliminar los vehiculos asociados a la persona */
+        foreach ($persona->vehicles as $vehiculo) {
             $vehiculo->delete();
         }
-
+        /* Eliminar a la persona encontrada */
         $persona->delete();
         return redirect()->route('personas.index')->with('success', 'La persona ha sido eliminada exitosamente');
     }
@@ -142,14 +149,16 @@ class PersonController extends Controller
      * @param  \App\Models\Person  $person
      * @return \Illuminate\Http\Response
      */
-    public function history($id){
+    public function history($id)
+    {
+        /* Se busca a la persona y sus vehiculos */
         try {
             $persona = Person::findOrfail($id);
             $vehiculos = Vehicle::withTrashed()->where('person_id', $id)->paginate(10);
         } catch (\Throwable $th) {
+            /* Si no se encuentra la persona arroja un error */
             return redirect()->route('personas.index')->with('error', 'La persona no ha sido encontrada');
         }
-        return view('person.history',compact('vehiculos', 'persona'));
+        return view('person.history', compact('vehiculos', 'persona'));
     }
-
 }

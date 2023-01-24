@@ -17,6 +17,7 @@ class VehicleController extends Controller
      */
     public function index()
     {
+        /* Se obtienen los vehiculos para ser paginados */
         $vehiculos = Vehicle::paginate(10);
         return view('vehicle.index', compact('vehiculos'));
     }
@@ -28,6 +29,7 @@ class VehicleController extends Controller
      */
     public function create()
     {
+        /* Se obtienen todas las personas para mostrarlas en el selector de duenio */
         $personas = Person::all();
         return view('vehicle.create', compact('personas'));
     }
@@ -39,7 +41,8 @@ class VehicleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
+        /* Se valida los datos del vehiculo */
         $validated = $request->validate([
             'duenio' => 'required',
             'marcaVehiculo' => 'required',
@@ -48,18 +51,21 @@ class VehicleController extends Controller
             'precioVehiculo' => 'required',
         ]);
 
+        /* Se agrega un vehiculo */
         try {
             $vehiculo = new Vehicle();
             $vehiculo->marca = $request->marcaVehiculo;
             $vehiculo->modelo = $request->modeloVehiculo;
             $vehiculo->anio = $request->anioVehiculo;
             $vehiculo->precio = $request->precioVehiculo;
-    
+
+            /* Se asocia el vehiculo a la persona */
             $persona = Person::find($request->duenio);
             $vehiculo->person()->associate($persona);
-    
+            /* Se guarda el vehiculo */
             $vehiculo->save();
         } catch (\Throwable $th) {
+            /* Si ocurre un error al ingresar un vehiculo arroja un mensaje de error */
             Log::info('Error en store de contralador de vehiculo');
             Log::error($th);
             return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido creado exitosamente');
@@ -87,10 +93,11 @@ class VehicleController extends Controller
      */
     public function edit($id)
     {
+        /* Se obtienen todas las personas para rellenar el selector de duenio */
         $personas = Person::all();
+        /* Se busca el vehiculo a editar */
         $vehiculo = Vehicle::findOrFail($id);
-        return view('vehicle.edit',compact('vehiculo', 'personas'));
-        
+        return view('vehicle.edit', compact('vehiculo', 'personas'));
     }
 
     /**
@@ -102,6 +109,7 @@ class VehicleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        /* Se validan los datos a actualizar */
         $validated = $request->validate([
             'duenio' => 'required',
             'marcaVehiculo' => 'required',
@@ -110,22 +118,23 @@ class VehicleController extends Controller
             'precioVehiculo' => 'required',
         ]);
 
+        /* Se actualizan los datos del vehiculo */
         try {
             $vehiculo = Vehicle::find($id);
             $vehiculo->marca = $request->marcaVehiculo;
             $vehiculo->modelo = $request->modeloVehiculo;
-            $vehiculo->anio = $request->anioVehiculo;  
-            $vehiculo->precio = $request->precioVehiculo;  
-    
+            $vehiculo->anio = $request->anioVehiculo;
+            $vehiculo->precio = $request->precioVehiculo;
+
             $persona = Person::find($request->duenio);
             $vehiculo->person()->associate($persona);
-    
+
             $vehiculo->save();
         } catch (\Throwable $th) {
+            /* Si hay un error al actualizar un vehiculo se arrojara un mensaje de error */
             Log::info('Error en update de contralador de vehiculo');
             Log::error($th);
             return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido actualizado exitosamente');
-          
         }
         return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido actualizado exitosamente');
     }
@@ -138,7 +147,9 @@ class VehicleController extends Controller
      */
     public function destroy($id)
     {
+        /* Se busca el vehiculo a eliminar */
         $vehiculo = Vehicle::findOrFail($id);
+        /*Se eliminar el vehiculo  */
         $vehiculo->delete();
         return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido eliminado exitosamente');
     }

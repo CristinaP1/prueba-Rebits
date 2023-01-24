@@ -1,14 +1,20 @@
 <x-layout />
-
+<!-- Se incluye la componente toast -->
 @include('components.toast')
 
+<!-- Contenedor del listado de vehiculos -->
 <div class="container__list">
+    <!-- Encabezado del listado -->
     <div class="header__list">
+        <!-- Titulo del encabezado -->
         <h4 class="title__list">Listado de vehiculos</h4>
+        <!-- Boton para agregar un nuevo vehiculo -->
         <a class="btn btn-success" href="{{route('vehiculos.create')}}">Nuevo</a>
     </div>
     <hr>
+    <!-- Contenedor de la tabla de vehiculos -->
     <div class="container__table">
+        <!-- Tabla de vehiculos -->
         <table class="table  table-striped table-hover">
             <thead>
                 <tr>
@@ -40,6 +46,7 @@
                 @endforeach
             </tbody>
         </table>
+        <!-- Paginacion de vehiculos -->
         <div class="paginator">
             {{ $vehiculos->links() }}
         </div>

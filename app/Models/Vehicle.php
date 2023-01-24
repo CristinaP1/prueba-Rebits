@@ -11,6 +11,7 @@ class Vehicle extends Model
     use HasFactory;
     use SoftDeletes;
 
+    /* Relacion uno es a muchos inverso */
     public function person()
     {
         return $this->belongsTo(Person::class);

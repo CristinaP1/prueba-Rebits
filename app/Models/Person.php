@@ -11,6 +11,7 @@ class Person extends Model
     use HasFactory;
     use SoftDeletes;
 
+    /* Relacion uno es a muchos */
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class);
