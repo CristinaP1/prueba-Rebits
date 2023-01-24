@@ -6,6 +6,7 @@ use App\Models\Vehicle;
 use App\Models\Person;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class VehicleController extends Controller
 {
@@ -38,7 +39,7 @@ class VehicleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    { 
         $validated = $request->validate([
             'duenio' => 'required',
             'marcaVehiculo' => 'required',
@@ -47,16 +48,22 @@ class VehicleController extends Controller
             'precioVehiculo' => 'required',
         ]);
 
-        $vehiculo = new Vehicle();
-        $vehiculo->marca = $request->marcaVehiculo;
-        $vehiculo->modelo = $request->modeloVehiculo;
-        $vehiculo->anio = $request->anioVehiculo;
-        $vehiculo->precio = $request->precioVehiculo;
-
-        $persona = Person::find($request->duenio);
-        $vehiculo->person()->associate($persona);
-
-        $vehiculo->save();
+        try {
+            $vehiculo = new Vehicle();
+            $vehiculo->marca = $request->marcaVehiculo;
+            $vehiculo->modelo = $request->modeloVehiculo;
+            $vehiculo->anio = $request->anioVehiculo;
+            $vehiculo->precio = $request->precioVehiculo;
+    
+            $persona = Person::find($request->duenio);
+            $vehiculo->person()->associate($persona);
+    
+            $vehiculo->save();
+        } catch (\Throwable $th) {
+            Log::info('Error en store de contralador de vehiculo');
+            Log::error($th);
+            return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido creado exitosamente');
+        }
 
         return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido creado exitosamente');
     }
@@ -103,17 +110,23 @@ class VehicleController extends Controller
             'precioVehiculo' => 'required',
         ]);
 
-        $vehiculo = Vehicle::find($id);
-        $vehiculo->marca = $request->marcaVehiculo;
-        $vehiculo->modelo = $request->modeloVehiculo;
-        $vehiculo->anio = $request->anioVehiculo;  
-        $vehiculo->precio = $request->precioVehiculo;  
-
-        $persona = Person::find($request->duenio);
-        $vehiculo->person()->associate($persona);
-
-        $vehiculo->save();
-
+        try {
+            $vehiculo = Vehicle::find($id);
+            $vehiculo->marca = $request->marcaVehiculo;
+            $vehiculo->modelo = $request->modeloVehiculo;
+            $vehiculo->anio = $request->anioVehiculo;  
+            $vehiculo->precio = $request->precioVehiculo;  
+    
+            $persona = Person::find($request->duenio);
+            $vehiculo->person()->associate($persona);
+    
+            $vehiculo->save();
+        } catch (\Throwable $th) {
+            Log::info('Error en update de contralador de vehiculo');
+            Log::error($th);
+            return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido actualizado exitosamente');
+          
+        }
         return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido actualizado exitosamente');
     }
 

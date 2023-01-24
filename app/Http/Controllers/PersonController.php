@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PersonController extends Controller
 {
@@ -45,11 +46,17 @@ class PersonController extends Controller
             'correoUsuario' => 'required|email',
         ]);
 
-        $persona = new Person;
-        $persona->nombre = $request->nombreUsuario;
-        $persona->apellido = $request->apellidoUsuario;
-        $persona->correo = $request->correoUsuario;
-        $persona->save();
+        try {
+            $persona = new Person;
+            $persona->nombre = $request->nombreUsuario;
+            $persona->apellido = $request->apellidoUsuario;
+            $persona->correo = $request->correoUsuario;
+            $persona->save();
+        } catch (\Throwable $th) {
+            Log::info('Error en store de contralador de persona');
+            Log::error($th);
+            return redirect()->route('personas.index')->with('error', 'Se ha producido un error en el sistema');
+        }
 
         return redirect()->route('personas.index')->with('success', 'La persona ha sido creada exitosamente');
     }
@@ -92,11 +99,17 @@ class PersonController extends Controller
             'correoUsuario' => 'required|email',
         ]);
 
-        $persona = Person::find($id);
-        $persona->nombre = $request->nombreUsuario;
-        $persona->apellido = $request->apellidoUsuario;
-        $persona->correo = $request->correoUsuario;  
-        $persona->save();
+        try {
+            $persona = Person::find($id);
+            $persona->nombre = $request->nombreUsuario;
+            $persona->apellido = $request->apellidoUsuario;
+            $persona->correo = $request->correoUsuario;  
+            $persona->save();
+        } catch (\Throwable $th) {
+            Log::info('Error en update de contralador de persona');
+            Log::error($th);
+            return redirect()->route('personas.index')->with('success', 'La persona ha sido actualizada exitosamente');
+        }
 
         return redirect()->route('personas.index')->with('success', 'La persona ha sido actualizada exitosamente');
     }

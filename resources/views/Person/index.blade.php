@@ -1,4 +1,5 @@
 <x-layout />
+@include('components.toast')
 
 <div class="container__list">
     <div class="header__list">

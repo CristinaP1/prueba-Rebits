@@ -1,5 +1,6 @@
 <x-layout />
 
+@include('components.toast')
 <div class="container__list">
     <div class="header__list">
         <h4 class="title__list">Listado de vehiculos</h4>
