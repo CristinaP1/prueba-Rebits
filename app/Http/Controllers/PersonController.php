@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use App\Http\Controllers\Controller;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class PersonController extends Controller
@@ -15,7 +16,8 @@ class PersonController extends Controller
      */
     public function index()
     {
-        //
+        $personas = Person::paginate(5);
+        return view('person.index', compact('personas'));
     }
 
     /**
@@ -25,7 +27,7 @@ class PersonController extends Controller
      */
     public function create()
     {
-        //
+        return view('person.create');
     }
 
     /**
@@ -36,7 +38,13 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $persona = new Person;
+        $persona->nombre = $request->nombreUsuario;
+        $persona->apellido = $request->apellidoUsuario;
+        $persona->correo = $request->correoUsuario;
+        $persona->save();
+
+        return redirect()->route('personas.index')->with('success', 'La persona ha sido creada exitosamente');
     }
 
     /**
@@ -47,7 +55,7 @@ class PersonController extends Controller
      */
     public function show(Person $person)
     {
-        //
+        
     }
 
     /**
@@ -56,9 +64,10 @@ class PersonController extends Controller
      * @param  \App\Models\Person  $person
      * @return \Illuminate\Http\Response
      */
-    public function edit(Person $person)
+    public function edit($id)
     {
-        //
+        $persona = Person::findOrFail($id);
+        return view('person.edit',compact('persona'));
     }
 
     /**
@@ -68,9 +77,15 @@ class PersonController extends Controller
      * @param  \App\Models\Person  $person
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Person $person)
+    public function update(Request $request, $id)
     {
-        //
+        $persona = Person::find($id);
+        $persona->nombre = $request->nombreUsuario;
+        $persona->apellido = $request->apellidoUsuario;
+        $persona->correo = $request->correoUsuario;  
+        $persona->save();
+
+        return redirect()->route('personas.index')->with('success', 'La persona ha sido actualizada exitosamente');
     }
 
     /**
@@ -79,8 +94,21 @@ class PersonController extends Controller
      * @param  \App\Models\Person  $person
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Person $person)
+    public function destroy($id)
     {
-        //
+        $persona = Person::findOrFail($id);
+        $persona->delete();
+        return redirect()->route('personas.index')->with('success', 'La persona ha sido eliminada exitosamente');
+    }
+
+    /**
+     * View vehicle history
+     *
+     * @param  \App\Models\Person  $person
+     * @return \Illuminate\Http\Response
+     */
+    public function history($id){
+        $vehiculos = Vehicle::withTrashed()->where('person_id', $id)->get();
+        return view('person.history',compact('vehiculos'));
     }
 }
