@@ -3,8 +3,8 @@
 <div class="container__list">
     <div class="header__list">
         <h4 class="title__list">Historial de vehiculos</h4>
-        <a class="btn btn-success" href="{{route('personas.create')}}">Nuevo</a>
     </div>
+    <p><span style="color:#00609C; padding: 0 20px 0 20px;">{{$persona->nombre}} {{$persona->apellido}}<span></p>
 
     <hr>
     <div class="container__table">
@@ -15,6 +15,7 @@
                     <th>Modelo</th>
                     <th>Año</th>
                     <th>Precio</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -24,6 +25,11 @@
                     <td>{{$vehiculo->modelo}}</td>
                     <td>{{$vehiculo->anio}}</td>
                     <td>{{$vehiculo->precio}}</td>
+                    @if($vehiculo->delete_at)
+                        <td><span class="badge rounded-pill bg-success">Activo</span></td>
+                    @else
+                        <td><span class="badge rounded-pill bg-danger">Eliminado</span></td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>
