@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Models\Person;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,8 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        //
+        $vehiculos = Vehicle::paginate(5);
+        return view('vehicle.index', compact('vehiculos'));
     }
 
     /**
@@ -25,7 +27,8 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        //
+        $personas = Person::all();
+        return view('vehicle.create', compact('personas'));
     }
 
     /**
@@ -36,7 +39,19 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $vehiculo = new Vehicle();
+        $vehiculo->marca = $request->marcaVehiculo;
+        $vehiculo->modelo = $request->modeloVehiculo;
+        $vehiculo->anio = $request->anioVehiculo;
+        $vehiculo->precio = $request->precioVehiculo;
+
+        $persona = Person::find($request->duenio);
+        $vehiculo->person()->associate($persona);
+
+        $vehiculo->save();
+
+        return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido creado exitosamente');
     }
 
     /**
@@ -56,9 +71,12 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function edit(Vehicle $vehicle)
+    public function edit($id)
     {
-        //
+        $personas = Person::all();
+        $vehiculo = Vehicle::findOrFail($id);
+        return view('vehicle.edit',compact('vehiculo', 'personas'));
+        
     }
 
     /**
@@ -68,9 +86,20 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vehicle $vehicle)
+    public function update(Request $request, $id)
     {
-        //
+        $vehiculo = Vehicle::find($id);
+        $vehiculo->marca = $request->marcaVehiculo;
+        $vehiculo->modelo = $request->modeloVehiculo;
+        $vehiculo->anio = $request->anioVehiculo;  
+        $vehiculo->precio = $request->precioVehiculo;  
+
+        $persona = Person::find($request->duenio);
+        $vehiculo->person()->associate($persona);
+
+        $vehiculo->save();
+
+        return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido actualizado exitosamente');
     }
 
     /**
@@ -79,8 +108,10 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Vehicle $vehicle)
+    public function destroy($id)
     {
-        //
+        $vehiculo = Vehicle::findOrFail($id);
+        $vehiculo->delete();
+        return redirect()->route('vehiculos.index')->with('success', 'El vehiculo ha sido eliminado exitosamente');
     }
 }
