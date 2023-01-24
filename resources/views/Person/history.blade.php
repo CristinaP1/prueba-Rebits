@@ -28,7 +28,7 @@
                     <td>{{$vehiculo->modelo}}</td>
                     <td>{{$vehiculo->anio}}</td>
                     <td>{{$vehiculo->precio}}</td>
-                    @if($vehiculo->delete_at)
+                    @if($vehiculo->deleted_at == null)
                     <td><span class="badge rounded-pill bg-success">Activo</span></td>
                     @else
                     <td><span class="badge rounded-pill bg-danger">Eliminado</span></td>
