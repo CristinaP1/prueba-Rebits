@@ -37,3 +37,11 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.nav-link.active{
+    border-bottom: 2px solid rgb(16, 71, 116);
+}
+
+.navbar{
+    box-shadow: 0.2px 0.2px rgba(184, 183, 183, 0.84);
+}
