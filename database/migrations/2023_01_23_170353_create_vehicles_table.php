@@ -21,10 +21,9 @@ return new class extends Migration
             $table->string('modelo');
             $table->integer('anio');
             $table->integer('precio');
-
             $table->foreignIdFor(Person::class)->constrained();
-            
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
