@@ -17,7 +17,7 @@ class PersonController extends Controller
      */
     public function index()
     {
-        $personas = Person::paginate(5);
+        $personas = Person::paginate(10);
         return view('person.index', compact('personas'));
     }
 
@@ -80,7 +80,11 @@ class PersonController extends Controller
      */
     public function edit($id)
     {
-        $persona = Person::findOrFail($id);
+        try {
+            $persona = Person::findOrFail($id);
+        } catch (\Throwable $th) {
+            return redirect()->route('personas.index')->with('error', 'La persona no ha sido encontrada');
+        }
         return view('person.edit',compact('persona'));
     }
 
@@ -139,8 +143,13 @@ class PersonController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function history($id){
-        $vehiculos = Vehicle::withTrashed()->where('person_id', $id)->get();
-        return view('person.history',compact('vehiculos'));
+        try {
+            $persona = Person::findOrfail($id);
+            $vehiculos = Vehicle::withTrashed()->where('person_id', $id)->paginate(10);
+        } catch (\Throwable $th) {
+            return redirect()->route('personas.index')->with('error', 'La persona no ha sido encontrada');
+        }
+        return view('person.history',compact('vehiculos', 'persona'));
     }
 
 }
