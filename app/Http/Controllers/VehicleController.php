@@ -39,6 +39,13 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'duenio' => 'required',
+            'marcaVehiculo' => 'required',
+            'modeloVehiculo' => 'required',
+            'anioVehiculo' => 'required|digits_between:4,4',
+            'precioVehiculo' => 'required',
+        ]);
 
         $vehiculo = new Vehicle();
         $vehiculo->marca = $request->marcaVehiculo;
@@ -88,6 +95,14 @@ class VehicleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'duenio' => 'required',
+            'marcaVehiculo' => 'required',
+            'modeloVehiculo' => 'required',
+            'anioVehiculo' => 'required|digits_between:4,4',
+            'precioVehiculo' => 'required',
+        ]);
+
         $vehiculo = Vehicle::find($id);
         $vehiculo->marca = $request->marcaVehiculo;
         $vehiculo->modelo = $request->modeloVehiculo;
