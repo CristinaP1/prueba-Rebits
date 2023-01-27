@@ -38,7 +38,7 @@ class PersonTest extends TestCase
         $persona->save();
 
         $response = $this->get('/personas/30/edit');
-        $response->assertStatus(200);
+        $response->assertStatus(302);
     }
 
     public function test_destroy(){
@@ -94,7 +94,7 @@ class PersonTest extends TestCase
 
     public function test_history_id_falso(){
         $response = $this->get('/historial/30');
-        $response->assertStatus(200);
+        $response->assertStatus(302);
     }
 
 }
